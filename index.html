@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch Urls</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right,#1A4D2E,#4F6F52,#E8DFCA,#F5EFE6);
+        color: #F5EFE6;
+      }
+
+      .input-text {
+        width: 80%;
+        height: 40px;
+        padding: 10px;
+        margin-top: 100px;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+        border: 2px solid #1A4D2E;
+        border-radius: 8px;
+        outline: none;
+        font-size: 16px;
+        text-align: center;
+      }
+
+      .fetch-button {
+        padding: 10px 20px;
+        border: solid 1px #1A4D2E;
+        color: white;
+        background-color: transparent;
+        border-radius: 8px;
+        cursor: pointer;
+        display: block;
+        margin: 20px auto;
+        font-size: 18px;
+        font-weight: bold;
+      }
+
+      .fetch-button:hover {
+        background-color: #1A4D2E;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      .card {
+        background-color: #E8DFCA;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        padding: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card a {
+        text-decoration: none;
+        color: #333;
+        transition: color 0.3s;
+        overflow-wrap: break-word;
+        display: inline-block;
+        padding: 8px;
+        margin-right: 10px;
+        margin-bottom: 10px; 
+      }
+
+      .card a:hover {
+        color: #000;
+      }
+
+      .card:hover {
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
+      }
+    </style>
+  </head>
+  <body>
+    <input type="text" id="urlInput" class="input-text"
+      placeholder="Enter url for page"
+    />
+    <div>
+      <button onclick="extractUrls()" class="fetch-button">Fetch Urls</button>
+      <div id="url-list"></div>
+    </div>
+    <script>
+      function extractUrls() {
+        const url = document.getElementById("urlInput").value;
+        fetch("https://api.allorigins.win/get?url=" + encodeURIComponent(url))
+          .then((response) => response.json())
+          .then((data) => {
+            const html = data.contents;
+            const urls = html.match(/https?:\/\/[^'"\s]+/gi);
+
+            const urlList = document.getElementById("url-list");
+            urlList.innerHTML = "";
+
+            urls.forEach((url) => {
+              const card = document.createElement("div");
+              card.classList.add("card");
+              const link = document.createElement("a");
+              link.href = url;
+              link.target = "_blank";
+              link.textContent = url;
+              card.appendChild(link);
+              urlList.appendChild(card);
+            });
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+    </script>
+  </body>
+</html>
